@@ -1,57 +1,49 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Feb  7 23:10:41 2021
+"""  
+Simulate the coupled diffusion reaction system on a square
 
-@author: Mas
+        u(t+1) = u(t) + d_u*Laplace u(t) + f*u(t)*v(t),
+        v(t+1) = v(t) + d_v*Laplace u(t) + g*u(t)*v(t),
+
+with 0 Dirichlet boundary conditions, leading to pattern formation.
+
 """
-import numpy as np
 import matplotlib.pyplot as plt
 import random as rnd
-from matplotlib import colors
-from functions import Laplace
+from functions import Laplace, Laplace2, cmap, bounds, norm
 
-# create discrete colormap
-"""cmap = colors.ListedColormap(['white','ivory','moccasin', 'khaki', 
-                              'gold','goldenrod',
-                              'orange', 'orangered', 'red','darkred'])
-"""
-cmap = colors.ListedColormap(['blue','blue','khaki', 'khaki', 
-                              'gold','goldenrod',
-                              'orange', 'red', 'black','black'])
 
-bounds = [i for i in range(0,9)]
-#bounds = [-100,-50,-30,0,3,5,7,10,30,50,100]
-norm = colors.BoundaryNorm(bounds, cmap.N)
-
-#diffusion at 4.2/5 less stable but still pattern 
-d_u = 4/5
-d_v = 4/5
+# Key parameters
+# Diffusion at 4.2/5 less stable but still pattern
+# Using Laplace2 only simple pattern appears. 
+d_u = .8
+d_v = .8
 g = .05
 f = -.08
 
-steps = 100
-gridsize1 = 100
-gridsize2 = 100
-gridsize = gridsize1 + gridsize2
+steps = 100 #time steps simulated
+gs = 200 #gridsize
 E = 10 #If this is less than 9 the is not stable pattern (same inital condition)
 
-Grid1 = [[rnd.randint(0,E) for i in range(0,gridsize)]
-        for i in range(0,int(gridsize1))]
-for i in range(0,int(gridsize2)):
-    Grid1.append([rnd.randint(0,E) for j in range(0,gridsize)]) 
- 
-Grid2 = [[rnd.randint(0,E) for i in range(0,gridsize)]
-        for i in range(0,int(gridsize1))]
-for i in range(0,int(gridsize2)):
-    Grid2.append([rnd.randint(0,E) for j in range(0,gridsize)]) 
-# Different initial condiitons do not matter much? (Same E)
+Grid_u = [[rnd.randint(0,E) for i in range(0,gs)]
+        for i in range(0,int(gs))] 
+Grid_v = [[rnd.randint(0,E) for i in range(0,gs)]
+        for i in range(0,int(gs))] 
+# Different initial condiitons do not matter much? (E matters, if <8 no pattern)
+System = {'u': Grid_u, 'v': Grid_v }
 
-System = {'u': Grid1, 'v': Grid2 }
+D1, D2 =  0,0
+# This enforces a  Dirichlet boundary conditions D as the D's on 
+# the boundary never change.
+# D1, D2 =  -100, 100 looks like burning paper with 
+# still pattern inside 
+Grid_u_next = [[D1 for i in range(0,gs)]
+        for i in range(0,gs)]
+Grid_v_next = [[D2 for i in range(0,gs)]
+        for i in range(0,gs)]
 
-Grid_next1 = [[0 for i in range(0,gridsize)]
-        for i in range(0,gridsize)]
-Grid_next2 = [[0 for i in range(0,gridsize)]
-        for i in range(0,gridsize)]
+
+
+max_u, min_u, max_v, min_v = 5, 5, 5, 5
 
 for s in range(0,steps):
         #print(Grid_next == Grid)
@@ -61,18 +53,29 @@ for s in range(0,steps):
         ax[1].imshow(System['v'], cmap=cmap, norm=norm)
         ax[1].set_title('v: t = ' + str(s+1))
         plt.show()
-        for i in range(0,gridsize-1):
-            for j in range(0,gridsize-1):
-                Grid_next1[i][j] = System['u'][i][j]+ d_u*Laplace(System['u'],i,j)+f*System['u'][i][j]*System['v'][i][j]
-                Grid_next2[i][j] = System['v'][i][j] + d_v*Laplace(System['v'],i,j) +g*System['v'][i][j]*System['u'][i][j]
-        System['u'], Grid_next1 = Grid_next1, System['u'] #swap lists
-        System['v'], Grid_next2 = Grid_next2, System['v'] #swap lists
+        for i in range(0,gs-1):
+            for j in range(0,gs-1):
+                Grid_u_next[i][j] = System['u'][i][j]+ d_u*Laplace(System['u'],i,j)+f*System['u'][i][j]*System['v'][i][j]
+                Grid_v_next[i][j] = System['v'][i][j] + d_v*Laplace(System['v'],i,j) +g*System['v'][i][j]*System['u'][i][j]
+        System['u'], Grid_u_next = Grid_u_next, System['u'] #swap lists
+        System['v'], Grid_v_next = Grid_v_next, System['v']#swap lists
+        """if s > int(steps/2):
+            if max(max(System['u'], key=max)) > max_u:
+                max_u = max(max(System['u'], key=max))
+            if min(min(System['u'], key=min)) < min_u:
+                min_u = min(min(System['u'], key=min))
+            if max(max(System['v'], key=max)) > max_v:
+                max_v = max(max(System['v'], key=max))
+            if min(min(System['v'], key=min)) < min_v:
+                min_v = min(min(System['v'], key=min))
+print('Max and mins after ',int(steps/2),' steps:')         
+print('(max_u, min_u)=',[max_u,min_u])
+print('(max_v, min_v)=',[max_v,min_v]) """
+plt.imshow([bounds], cmap=cmap, norm=norm)
+plt.show()
+
  
         
-""" #Discrete: u(t+1) = u(t) + d_a Delta u(t) + u(t)(c -f v(x))
-    #PDE:    u_t = d_a Delta u(t) + 
-  
-   
-    """
+
 
    
