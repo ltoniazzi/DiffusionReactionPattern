@@ -12,6 +12,8 @@ def Laplace(grid,i,j):
     return (grid[i][j-1]+grid[i-1][j]+grid[i+1][j]+grid[i][j+1]-4*grid[i][j])/4 
 def Laplace2(grid,i,j):
     return .2*grid[i][j-1]+.2*grid[i-1][j]+.2*grid[i+1][j]+.2*grid[i][j+1]+.05*grid[i+1][j+1]+.05*grid[i-1][j+1]+.05*grid[i-1][j-1]+.05*grid[i+1][j-1]-grid[i][j] 
+def Laplace3(grid,i,j):
+    return (1/8)*grid[i][j-1]+(1/8)*grid[i-1][j]+(1/8)*grid[i+1][j]+(1/8)*grid[i][j+1]+(1/8)*grid[i+1][j+1]+(1/8)*grid[i-1][j+1]+(1/8)*grid[i-1][j-1]+(1/8)*grid[i+1][j-1]-grid[i][j] 
 def subtract(list1,list2):
     res = [list1[i]-list2[i] for i in  range(0,len(list1))]
     return res

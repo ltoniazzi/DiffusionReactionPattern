@@ -9,18 +9,21 @@ with 0 Dirichlet boundary conditions, leading to pattern formation.
 """
 import matplotlib.pyplot as plt
 import random as rnd
-from functions import Laplace, Laplace2, cmap, bounds, norm
+from functions import Laplace, Laplace2, Laplace3, cmap, bounds, norm
 
 
 # Key parameters
-# Diffusion at 4.2/5 less stable but still pattern
-# Using Laplace2 only simple pattern appears. 
-d_u = .8
-d_v = .8
+d_u = .85
+d_v = .85
 g = .05
 f = -.08
+# COMMENTS;
+# Diffusion at .8 more stable clear pattern+grid. At .9 it burns in the center
+# u =.8, v=.9 a hot grid starts to appear for v. Swap this and it burns in some spots
+# Using Laplace2 or Laplace3 only a trivial pattern appears! 
 
-steps = 100 #time steps simulated
+
+steps = 200 #time steps simulated
 gs = 200 #gridsize
 E = 10 #If this is less than 9 the is not stable pattern (same inital condition)
 
@@ -28,10 +31,15 @@ Grid_u = [[rnd.randint(0,E) for i in range(0,gs)]
         for i in range(0,int(gs))] 
 Grid_v = [[rnd.randint(0,E) for i in range(0,gs)]
         for i in range(0,int(gs))] 
-# Different initial condiitons do not matter much? (E matters, if <8 no pattern)
+# Comments:
+# Different white noise-like initial condiitons do not matter as long as E \ge 8 
+# Deterministic initial condition 10 gives a funny result with singularities
+# developping at the corners  (try combine with D1, D2 =  20,20).
+
+
 System = {'u': Grid_u, 'v': Grid_v }
 
-D1, D2 =  0,0
+D1, D2 =  0, 0
 # This enforces a  Dirichlet boundary conditions D as the D's on 
 # the boundary never change.
 # D1, D2 =  -100, 100 looks like burning paper with 
