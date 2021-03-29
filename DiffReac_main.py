@@ -39,7 +39,7 @@ Grid_v = [[rnd.randint(0,E) for i in range(0,gs)]
 
 System = {'u': Grid_u, 'v': Grid_v }
 
-D1, D2 =  0, 0
+D1, D2 =  0,0
 # This enforces a  Dirichlet boundary conditions D as the D's on 
 # the boundary never change.
 # D1, D2 =  -100, 100 looks like burning paper with 
@@ -56,9 +56,9 @@ max_u, min_u, max_v, min_v = 5, 5, 5, 5
 for s in range(0,steps):
         #print(Grid_next == Grid)
         fig, ax = plt.subplots(1,2)
-        ax[0].imshow(System['u'], cmap=cmap, norm=norm)
+        ax[0].imshow(System['u'])
         ax[0].set_title('u: t = ' + str(s+1))
-        ax[1].imshow(System['v'], cmap=cmap, norm=norm)
+        ax[1].imshow(System['v'])
         ax[1].set_title('v: t = ' + str(s+1))
         plt.show()
         for i in range(0,gs-1):
