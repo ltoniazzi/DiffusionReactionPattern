@@ -1,2 +1,2 @@
 # Diffusion-reaction simulation that leads quickly to nice 2-d patterns
-# Phyton
+(Phyton 3)
